@@ -203,10 +203,8 @@ contract PatchRegistry is Storage, Ownable, FullAssetRegistry, IPatchRegistry {
 
   function _tokenMetadata(uint256 assetId) internal view returns (string) {
     address _owner = _ownerOf(assetId);
-    if (_isContract(_owner) && _owner != address(estateRegistry)) {
-      if ((ERC165(_owner)).supportsInterface(GET_METADATA)) {
+    if ((ERC165(_owner)).supportsInterface(GET_METADATA)) {
         return IMetadataHolder(_owner).getMetadata(assetId);
-      }
     }
     return _assetData[assetId];
   }
@@ -218,17 +216,6 @@ contract PatchRegistry is Storage, Ownable, FullAssetRegistry, IPatchRegistry {
   //
   // Patch Transfer
   //
-
-  function transferFrom(address from, address to, uint256 assetId) external {
-    require(to != address(estateRegistry), "EstateRegistry unsafe transfers are not allowed");
-    return _doTransferFrom(
-      from,
-      to,
-      assetId,
-      "",
-      false
-    );
-  }
 
   function transferPatch(int x, int y, address to) external {
     uint256 tokenId = _encodeTokenId(x, y);
@@ -243,7 +230,6 @@ contract PatchRegistry is Storage, Ownable, FullAssetRegistry, IPatchRegistry {
 
   function transferManyPatch(int[] x, int[] y, address to) external {
     require(x.length > 0, "You should supply at least one coordinate");
-    require(x.length == y.length, "The coordinates should have the same length");
 
     for (uint i = 0; i < x.length; i++) {
       uint256 tokenId = _encodeTokenId(x[i], y[i]);
@@ -257,21 +243,7 @@ contract PatchRegistry is Storage, Ownable, FullAssetRegistry, IPatchRegistry {
     }
   }
 
-  function transferPatchToEstate(int x, int y, uint256 estateId) external {
-    require(
-      estateRegistry.ownerOf(estateId) == msg.sender,
-      "You must own the Estate you want to transfer to"
-    );
 
-    uint256 tokenId = _encodeTokenId(x, y);
-    _doTransferFrom(
-      _ownerOf(tokenId),
-      address(estateRegistry),
-      tokenId,
-      toBytes(estateId),
-      true
-    );
-  }
 
 
   function setUpdateOperator(uint256 assetId, address operator) external onlyAuthorized(assetId) {
