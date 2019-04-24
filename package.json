@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/jamestouri/district/issues"
   },
-  "homepage": "https://github.com/jamestouri/district#readme"
+  "homepage": "https://github.com/jamestouri/district#readme",
+  "dependencies": {
+    "openzeppelin-solidity": "^2.2.0"
+  }
 }
